@@ -14,12 +14,12 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("v1/api/team")
+@RequestMapping("/v1/api/team")
 public class TeamApiControllerV1 {
 
     private final TeamRepository teamRepository;
 
-    @GetMapping("/")
+    @GetMapping("")
     public Page<TeamDto> list(@Valid TeamSearchCond condition, Pageable pageable) {
         return teamRepository.search(condition, pageable);
     }
@@ -33,7 +33,7 @@ public class TeamApiControllerV1 {
         return new TeamDto(findTeam);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public TeamDto create(@RequestBody @Valid TeamRequest request) {
 
         Team createTeam = Team.builder()

@@ -18,13 +18,13 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("v1/api/member")
+@RequestMapping("/v1/api/member")
 public class MemberApiControllerV1 {
 
     private final MemberRepository memberRepository;
     private final TeamRepository teamRepository;
 
-    @GetMapping("/")
+    @GetMapping("")
     public Page<MemberDto> list(@Valid MemberSearchCond condition, Pageable pageable) {
         return memberRepository.search(condition, pageable);
     }
@@ -38,7 +38,7 @@ public class MemberApiControllerV1 {
         return new MemberDto(findMember);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public MemberDto create(@RequestBody @Valid MemberRequest request) {
         Team findTeam = null;
 
