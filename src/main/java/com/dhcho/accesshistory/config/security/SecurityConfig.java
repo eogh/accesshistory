@@ -24,7 +24,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    // TODO : hasRole 권한으로 동작하는게 잘 안됨.
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http

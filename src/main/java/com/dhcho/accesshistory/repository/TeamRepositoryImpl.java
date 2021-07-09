@@ -23,12 +23,13 @@ public class TeamRepositoryImpl implements TeamRepositoryCustom {
     public final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<TeamDto> search(TeamSearchCond condition, Pageable pageable) {
+    public List<TeamDto> search(TeamSearchCond condition, Pageable pageable) {
 
         List<TeamDto> content = queryFactory
                 .select(new QTeamDto(
                         team.id,
-                        team.name
+                        team.name,
+                        team.parent_id
                 ))
                 .from(team)
                 .where(
@@ -42,7 +43,8 @@ public class TeamRepositoryImpl implements TeamRepositoryCustom {
                         teamNameEq(condition.getName())
                 );
 
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount); // 페이지크기 < content크기 작거나, 마지막 페이지 호출시 count쿼리 생략함. (최적화);;
+//        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount); // 페이지크기 < content크기 작거나, 마지막 페이지 호출시 count쿼리 생략함. (최적화);;
+        return content;
     }
 
     private BooleanExpression teamNameEq(String teamName) {

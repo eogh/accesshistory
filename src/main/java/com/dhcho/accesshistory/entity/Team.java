@@ -7,10 +7,11 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: 트리구조로 변경하기 ex) closure Table
 @Entity
+@Builder
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @ToString(exclude = {"members"})
 public class Team extends BaseEntity {
     @Id
@@ -21,14 +22,12 @@ public class Team extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = true)
+    private Long parent_id;
+
     @JsonIgnore
     @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<>();
-
-    @Builder
-    public Team(String name) {
-        this.name = name;
-    }
 
     public void update(String name) { this.name = name; }
 }

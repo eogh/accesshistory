@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class TeamApiControllerV1 {
     private final TeamRepository teamRepository;
 
     @GetMapping("")
-    public Page<TeamDto> list(@Valid TeamSearchCond condition, Pageable pageable) {
+    public List<TeamDto> list(@Valid TeamSearchCond condition, Pageable pageable) {
         return teamRepository.search(condition, pageable);
     }
 
@@ -38,8 +39,33 @@ public class TeamApiControllerV1 {
 
         Team createTeam = Team.builder()
                 .name(request.getName())
+                .parent_id(request.getParent_id())
                 .build();
 
         return new TeamDto(teamRepository.save(createTeam));
+    }
+
+    @PutMapping("/{id}")
+    public TeamDto update(@PathVariable("id") Long id,
+                          @RequestBody @Valid TeamRequest request) {
+
+        Team findTeam = teamRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 team 입니다."));
+
+        findTeam.update(request.getName());
+        teamRepository.flush();
+
+        return new TeamDto(findTeam);
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable("id") Long id) {
+
+        Team findTeam = teamRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 team 입니다."));
+
+        teamRepository.delete(findTeam);
+
+        return "success";
     }
 }
