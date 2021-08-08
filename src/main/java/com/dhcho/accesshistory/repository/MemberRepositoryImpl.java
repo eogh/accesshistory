@@ -1,8 +1,6 @@
 package com.dhcho.accesshistory.repository;
 
-import com.dhcho.accesshistory.dto.MemberDto;
 import com.dhcho.accesshistory.dto.MemberSearchCond;
-import com.dhcho.accesshistory.dto.QMemberDto;
 import com.dhcho.accesshistory.entity.GenderType;
 import com.dhcho.accesshistory.entity.Member;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -26,22 +24,9 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     public final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<MemberDto> search(MemberSearchCond condition, Pageable pageable) {
-        List<MemberDto> content = queryFactory
-                .select(new QMemberDto(
-                        member.id,
-                        member.name,
-                        member.gender,
-                        member.birth,
-                        member.phone,
-                        member.address,
-                        member.qrcode,
-                        member.registerTime,
-                        member.createTime,
-                        member.modifyTime,
-                        member.team
-                ))
-                .from(member)
+    public Page<Member> search(MemberSearchCond condition, Pageable pageable) {
+        List<Member> content = queryFactory
+                .selectFrom(member)
                 .leftJoin(member.team, team)
                 .where(
                         memberNameEq(condition.getName()),
