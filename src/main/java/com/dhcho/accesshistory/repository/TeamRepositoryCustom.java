@@ -1,11 +1,10 @@
 package com.dhcho.accesshistory.repository;
 
-import com.dhcho.accesshistory.dto.TeamDto;
 import com.dhcho.accesshistory.dto.TeamSearchCond;
+import com.dhcho.accesshistory.entity.Team;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 public interface TeamRepositoryCustom {
-    List<TeamDto> search(TeamSearchCond condition, Pageable pageable);
+    Page<Team> search(TeamSearchCond condition, Pageable pageable);
 }

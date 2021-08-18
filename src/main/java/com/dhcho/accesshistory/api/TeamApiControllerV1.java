@@ -1,71 +1,51 @@
 package com.dhcho.accesshistory.api;
 
-import com.dhcho.accesshistory.dto.TeamDto;
 import com.dhcho.accesshistory.dto.TeamRequest;
+import com.dhcho.accesshistory.dto.TeamResponse;
 import com.dhcho.accesshistory.dto.TeamSearchCond;
 import com.dhcho.accesshistory.entity.Team;
-import com.dhcho.accesshistory.repository.TeamRepository;
+import com.dhcho.accesshistory.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/api/team")
 public class TeamApiControllerV1 {
 
-    private final TeamRepository teamRepository;
+    private final TeamService teamService;
 
     @GetMapping
-    public List<TeamDto> list(@Valid TeamSearchCond condition, Pageable pageable) {
-        return teamRepository.search(condition, pageable);
+    public Page<Team> findTeams(@Valid TeamSearchCond condition, Pageable pageable) {
+        return teamService.search(condition, pageable);
     }
 
     @GetMapping("/{id}")
-    public TeamDto one(@PathVariable("id") Long id) {
-
-        Team findTeam = teamRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 team 입니다."));
-
-        return new TeamDto(findTeam);
+    public TeamResponse findOne(@PathVariable("id") Long id) {
+        Team findTeam = teamService.findOne(id);
+        return new TeamResponse(findTeam);
     }
 
     @PostMapping
-    public TeamDto create(@RequestBody @Valid TeamRequest request) {
-
-        Team createTeam = Team.builder()
-                .name(request.getName())
-                .parent_id(request.getParent_id())
-                .build();
-
-        return new TeamDto(teamRepository.save(createTeam));
+    public TeamResponse create(@RequestBody @Valid TeamRequest request) {
+        Team createTeam = teamService.create(request);
+        return new TeamResponse(createTeam);
     }
 
     @PutMapping("/{id}")
-    public TeamDto update(@PathVariable("id") Long id,
-                          @RequestBody @Valid TeamRequest request) {
-
-        Team findTeam = teamRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 team 입니다."));
-
-        findTeam.update(request.getName());
-        teamRepository.flush();
-
-        return new TeamDto(findTeam);
+    public TeamResponse update(@PathVariable("id") Long id,
+                               @RequestBody @Valid TeamRequest request) {
+        Team updateTeam = teamService.update(id, request);
+        return new TeamResponse(updateTeam);
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") Long id) {
-
-        Team findTeam = teamRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 team 입니다."));
-
-        teamRepository.delete(findTeam);
-
-        return "success";
+    public TeamResponse delete(@PathVariable("id") Long id) {
+        Team deleteTeam = teamService.delete(id);
+        return new TeamResponse(deleteTeam);
     }
 }
